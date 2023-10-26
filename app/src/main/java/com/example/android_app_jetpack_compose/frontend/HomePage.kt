@@ -85,7 +85,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         },
         topBar = {
             TopAppBar(
-                title = { Text(text = "Homepage") },
+                title = { Text(text = "List User") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -106,7 +106,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                             .padding(8.dp)
                             .background(MaterialTheme.colorScheme.surface)
                             .clickable { /* Handle item click if needed */ }
-                            .padding(8.dp)) {
+                            ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary),
                                 horizontalArrangement = Arrangement.SpaceBetween,
