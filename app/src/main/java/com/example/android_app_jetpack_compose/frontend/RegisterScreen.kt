@@ -1,11 +1,7 @@
-package com.example.android_app_jetpack_compose
+package com.example.android_app_jetpack_compose.frontend
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +22,11 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,98 +42,29 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.android_app_jetpack_compose.data.LoginData
-import com.example.android_app_jetpack_compose.frontend.CreateUserPage
-import com.example.android_app_jetpack_compose.frontend.Homepage
-import com.example.android_app_jetpack_compose.frontend.RegisterScreen
+import com.example.android_app_jetpack_compose.PreferencesManager
+import com.example.android_app_jetpack_compose.R
+import com.example.android_app_jetpack_compose.data.RegisterData
 import com.example.android_app_jetpack_compose.response.LoginResponse
-import com.example.android_app_jetpack_compose.service.LoginService
-import com.example.android_app_jetpack_compose.ui.theme.AndroidappjetpackcomposeTheme
+import com.example.android_app_jetpack_compose.service.RegisterService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AndroidappjetpackcomposeTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val sharedPreferences: SharedPreferences =
-                        LocalContext.current.getSharedPreferences("auth", Context.MODE_PRIVATE)
-                    val navController = rememberNavController()
-
-                    val startD: String
-                    val jwt = sharedPreferences.getString("jwt", "")
-                    startD = if (jwt.equals("")) {
-                        "login"
-                    } else {
-                        "homepage"
-                    }
-
-                    NavHost(navController = navController, startDestination = startD) {
-                        composable("login") {
-                            LoginScreen(navController)
-                        }
-                        composable("homepage") {
-                            Homepage(navController)
-                        }
-                        composable("register") {
-                            RegisterScreen(navController)
-                        }
-                        composable("createuser") {
-                            CreateUserPage(navController)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidappjetpackcomposeTheme {
-        Greeting("Android")
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, context: Context = LocalContext.current) {
+fun RegisterScreen(navController: NavController, context: Context = LocalContext.current) {
     val preferencesManager = remember { PreferencesManager(context = context) }
 
-    val usernameField = remember { mutableStateOf(TextFieldValue("")) }
+    val nameField = remember { mutableStateOf(TextFieldValue("")) }
+    val emailField = remember { mutableStateOf(TextFieldValue("")) }
     val passwordField = remember { mutableStateOf(TextFieldValue("")) }
     val passwordVisible = remember { mutableStateOf(false) }
-
-    val baseUrl = "http://10.0.2.2:1337/api/"
-//    val baseUrl = "http://10.217.17.11:1337/api/" //KALAU TIDAK DI EMULATOR
-
-    var jwt by remember { mutableStateOf("") }
-    jwt = preferencesManager.getData("jwt")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -168,6 +95,35 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                 modifier = Modifier.align(Alignment.Start)
             )
             Text(
+                text = "Username",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                    color = Color(0xFF1E1E1E),
+                    textAlign = TextAlign.Center,
+                ),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 14.dp)
+            )
+            OutlinedTextField(
+                value = nameField.value,
+                onValueChange = {
+                    nameField.value = it
+                },
+                singleLine = true,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .fillMaxWidth()
+                    .padding(2.dp)
+                    .border(
+                        width = 1.5.dp,
+                        color = Color(0xFF6650a4),
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+                placeholder = { Text(text = "Contoh: James Doe") }
+            )
+            Text(
                 text = "Email",
                 style = TextStyle(
                     fontSize = 14.sp,
@@ -177,12 +133,12 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                 ),
                 modifier = Modifier
                     .align(Alignment.Start)
-                    .padding(top = 48.dp)
+                    .padding(top = 14.dp)
             )
             OutlinedTextField(
-                value = usernameField.value,
+                value = emailField.value,
                 onValueChange = {
-                    usernameField.value = it
+                    emailField.value = it
                 },
                 singleLine = true,
                 modifier = Modifier
@@ -206,7 +162,7 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                 ),
                 modifier = Modifier
                     .align(Alignment.Start)
-                    .padding(top = 28.dp)
+                    .padding(top = 14.dp)
             )
             OutlinedTextField(
                 value = passwordField.value,
@@ -246,7 +202,7 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                     }
                 }
             )
-            Spacer(modifier = Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.padding(10.dp))
             ElevatedButton(
                 modifier = Modifier
                     .align(Alignment.Start)
@@ -258,40 +214,30 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                 ),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    val retrofit =
-                        Retrofit.Builder()
-                            .baseUrl(baseUrl)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build()
-                            .create(LoginService::class.java)
-                    val call = retrofit.getData(
-                        LoginData(
-                            usernameField.value.text,
-                            passwordField.value.text
-                        )
-                    )
+                    val baseUrl = "http://10.0.2.2:1337/api/"
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(baseUrl)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                        .create(RegisterService::class.java)
+                    val call =
+                        retrofit.saveData(RegisterData(emailField.value.text, nameField.value.text, passwordField.value.text))
                     call.enqueue(object : Callback<LoginResponse> {
                         override fun onResponse(
                             call: Call<LoginResponse>,
                             response: Response<LoginResponse>
                         ) {
-                            print(response.code())
-                            if (response.code() == 200) {
-                                jwt = response.body()?.jwt!!
-                                preferencesManager.saveData("jwt", jwt)
-                                navController.navigate("homepage")
-                            } else if (response.code() == 400) {
-                                print("bad request 400")
-                                Toast.makeText(
-                                    context,
-                                    "Username atau password salah",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                            if (response.isSuccessful) {
+                                val jwt = response.body()?.jwt
+                                preferencesManager.saveData("jwt", jwt.toString())
+                                navController.navigate("login")
+                            } else {
+                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                             }
                         }
 
                         override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                            print(t.message)
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
                         }
                     })
                 }
@@ -307,6 +253,15 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                     )
                 )
             }
+            Spacer(modifier = Modifier.padding(10.dp))
+            Text(
+                text = "Dengan mendaftar, kamu telah menyetujui Syarat & Ketentuan serta Kebijakan Privasi Refoodbish.",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    textAlign = TextAlign.Center
+                )
+            )
             Text(
                 text = "atau masuk dengan",
                 style = TextStyle(
@@ -317,7 +272,7 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
                 ),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 14.dp)
+                    .padding(top = 28.dp)
                     .padding(bottom = 28.dp)
             )
             Row {
@@ -345,27 +300,27 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
             }
             Row {
                 Text(
-                    text = "Belum punya akun?",
+                    text = "Sudah punya akun?",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_regular)),
                         color = Color(0xFF1E1E1E),
                         textAlign = TextAlign.Left
                     ),
-                    modifier = Modifier.padding(top = 48.dp)
+                    modifier = Modifier.padding(top = 28.dp)
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
                 ClickableText(
-                    text = AnnotatedString("Daftar dulu"),
+                    text = AnnotatedString("Masuk aja"),
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_medium)),
                         color = Color(0xFF6650a4),
                         textAlign = TextAlign.Left
                     ),
-                    modifier = Modifier.padding(top = 48.dp)
+                    modifier = Modifier.padding(top = 28.dp)
                 ) {
-                    navController.navigate("register")
+                    navController.navigate("login")
                 }
             }
 
