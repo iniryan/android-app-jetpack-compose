@@ -106,9 +106,11 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                             .padding(8.dp)
                             .background(MaterialTheme.colorScheme.surface)
                             .clickable { /* Handle item click if needed */ }
-                            ) {
+                        ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.primary),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -117,7 +119,11 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                         .padding(16.dp)
                                         .weight(1f)
                                 ) {
-                                    Text(text = user.username, fontWeight = FontWeight.Bold, color = Color.White)
+                                    Text(
+                                        text = user.username,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
                                     Text(
                                         text = user.email,
                                         color = Color.White
@@ -135,7 +141,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                         ) {
                                             print(response.code())
                                             if (response.code() == 200) {
-//                                                listUser.remove(user)
+                                                listUser.remove(user)
                                             } else if (response.code() == 400) {
                                                 print("error login")
                                                 var toast = Toast.makeText(
