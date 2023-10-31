@@ -55,6 +55,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.android_app_jetpack_compose.data.LoginData
 import com.example.android_app_jetpack_compose.frontend.CreateUserPage
+import com.example.android_app_jetpack_compose.frontend.EditUserPage
 import com.example.android_app_jetpack_compose.frontend.Homepage
 import com.example.android_app_jetpack_compose.frontend.RegisterScreen
 import com.example.android_app_jetpack_compose.response.LoginResponse
@@ -100,6 +101,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("createuser") {
                             CreateUserPage(navController)
+                        }
+                        composable(
+                            route = "edituserpage/{userid}/{username}/{email}",
+                        ) {backStackEntry ->
+
+                            EditUserPage(navController, backStackEntry.arguments?.getString("userid"), backStackEntry.arguments?.getString("username"), backStackEntry.arguments?.getString("email"))
                         }
                     }
                 }

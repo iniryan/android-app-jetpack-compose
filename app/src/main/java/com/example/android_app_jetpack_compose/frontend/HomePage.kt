@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -64,7 +65,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                 }
             } else if (response.code() == 400) {
                 print("error login")
-                var toast = Toast.makeText(
+                Toast.makeText(
                     context, "Username atau password salah", Toast.LENGTH_SHORT
                 ).show()
             }
@@ -130,11 +131,11 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                     )
                                 }
                                 IconButton(modifier = Modifier.size(48.dp), onClick = {
-                                    val retrofit = Retrofit.Builder().baseUrl(baseUrl)
+                                    val retrofitDelete = Retrofit.Builder().baseUrl(baseUrl)
                                         .addConverterFactory(GsonConverterFactory.create()).build()
                                         .create(UserService::class.java)
-                                    val call = retrofit.delete(user.id)
-                                    call.enqueue(object : Callback<UserResponse> {
+                                    val callDelete = retrofitDelete.delete(user.id)
+                                    callDelete.enqueue(object : Callback<UserResponse> {
                                         override fun onResponse(
                                             call: Call<UserResponse>,
                                             response: Response<UserResponse>
@@ -144,7 +145,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                                 listUser.remove(user)
                                             } else if (response.code() == 400) {
                                                 print("error login")
-                                                var toast = Toast.makeText(
+                                                Toast.makeText(
                                                     context,
                                                     "Username atau password salah",
                                                     Toast.LENGTH_SHORT
@@ -164,6 +165,15 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Delete",
+                                        tint = Color.White
+                                    )
+                                }
+                                IconButton(modifier = Modifier.size(48.dp), onClick = {
+                                    navController.navigate("edituserpage/" + user.id + "/" + user.username + "/" + user.email)
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit",
                                         tint = Color.White
                                     )
                                 }
