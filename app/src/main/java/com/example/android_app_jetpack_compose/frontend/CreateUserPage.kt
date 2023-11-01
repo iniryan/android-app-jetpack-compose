@@ -2,6 +2,7 @@ package com.example.android_app_jetpack_compose.frontend
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -218,16 +219,17 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                 .align(Alignment.Start)
                 .fillMaxWidth()
                 .padding(2.dp)
-                .height(48.dp), colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-            ), shape = RoundedCornerShape(8.dp), onClick = {
-                navController.navigate("homepage")
-            }) {
+                .height(48.dp), border = BorderStroke(2.dp, Color(0xFF6650a4)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                ), shape = RoundedCornerShape(8.dp), onClick = {
+                    navController.navigate("homepage")
+                }) {
                 Text(
                     text = "Kembali", style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                        color = Color.White,
+                        color = Color(0xFF6650a4),
                         textAlign = TextAlign.Center,
                     )
                 )
@@ -238,7 +240,7 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                 .fillMaxWidth()
                 .padding(2.dp)
                 .height(48.dp), colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
+                containerColor = Color.Red,
             ), shape = RoundedCornerShape(8.dp), onClick = {
                 preferencesManager.saveData("jwt", "")
                 navController.navigate("login")

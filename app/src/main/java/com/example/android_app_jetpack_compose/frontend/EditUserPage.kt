@@ -2,6 +2,7 @@ package com.example.android_app_jetpack_compose.frontend
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,7 +44,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditUserPage(navController: NavController, userid : String?, usernameParameter: String?, emailParameter: String?, context: Context = LocalContext.current) {
+fun EditUserPage(
+    navController: NavController,
+    userid: String?,
+    usernameParameter: String?,
+    emailParameter: String?,
+    context: Context = LocalContext.current
+) {
     val nameField = remember { mutableStateOf(usernameParameter ?: "") }
     val emailField = remember { mutableStateOf(emailParameter ?: "") }
 
@@ -172,16 +179,17 @@ fun EditUserPage(navController: NavController, userid : String?, usernameParamet
                 .align(Alignment.Start)
                 .fillMaxWidth()
                 .padding(2.dp)
-                .height(48.dp), colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-            ), shape = RoundedCornerShape(8.dp), onClick = {
-                navController.navigate("homepage")
-            }) {
+                .height(48.dp), border = BorderStroke(2.dp, Color(0xFF6650a4)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                ), shape = RoundedCornerShape(8.dp), onClick = {
+                    navController.navigate("homepage")
+                }) {
                 Text(
                     text = "Kembali", style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
-                        color = Color.White,
+                        color = Color(0xFF6650a4),
                         textAlign = TextAlign.Center,
                     )
                 )
