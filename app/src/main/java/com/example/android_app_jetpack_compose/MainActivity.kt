@@ -141,7 +141,8 @@ fun LoginScreen(navController: NavController, context: Context = LocalContext.cu
     val passwordVisible = remember { mutableStateOf(false) }
 
     val baseUrl = "http://10.0.2.2:1337/api/"
-//    val baseUrl = "http://10.217.17.11:1337/api/" //KALAU TIDAK DI EMULATOR
+    //KALAU TIDAK DI EMULATOR
+//    val baseUrl = "http://10.217.17.11:1337/api/"
 
     var jwt by remember { mutableStateOf("") }
     jwt = preferencesManager.getData("jwt")
